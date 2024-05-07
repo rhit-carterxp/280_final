@@ -1,80 +1,76 @@
+/**
+ * @fileoverview
+ * Provides the JavaScript interactions for all pages.
+ *
+ * @author 
+ * PUT_YOUR_NAME_HERE
+ */
+
+/** namespace. */
 var rhit = rhit || {};
 
-rhit.main = function () {
-	console.log("Ready");
+/** globals */
+rhit.channel = 1;
+rhit.screensaver = 0;
 
-	firebase.auth().onAuthStateChanged((user) => {
-		if (user) {
-			const displayName = user.displayName;
-			const email = user.email;
-			const photoURL = user.photoURL;
-			const phoneNumber = user.phoneNumber;
-			const isAnonymous = user.isAnonymous;
-			const uid = user.uid;
-
-			console.log("The user is signed in ", uid);
-			console.log('displayName :>> ', displayName);
-			console.log('email :>> ', email);
-			console.log('photoURL :>> ', photoURL);
-			console.log('phoneNumber :>> ', phoneNumber);
-			console.log('isAnonymous :>> ', isAnonymous);
-			console.log('uid :>> ', uid);
+/** function and class syntax examples */
+rhit.updateCounter = function (amount) {
+	if(amount == 1){
+		if(rhit.channel == 5){
+			rhit.channel = 9;
+		} else if(rhit.channel == 9){
+			rhit.channel = 1;
 		} else {
-			console.log("There is no user signed in!");
+			rhit.channel += 1;
 		}
-	});
-
-	const inputEmailEl = document.querySelector("#inputEmail");
-	const inputPasswordEl = document.querySelector("#inputPassword");
-
-	document.querySelector("#signOutButton").onclick = (event) => {
-		console.log(`Sign out`);
-		firebase.auth().signOut().then(function () {
-			console.log("You are now signed out");
-		}).catch(function (error) {
-			console.log("Sign out error");
-		});
-	};
-
-	document.querySelector("#createAccountButton").onclick = (event) => {
-		console.log(`Create account for email: ${inputEmailEl.value} password:  ${inputPasswordEl.value}`);
-		firebase.auth().createUserWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value).catch(function (error) {
-			var errorCode = error.code;
-			var errorMessage = error.message;
-			console.log("Create account error", errorCode, errorMessage);
-		});
-	};
-	document.querySelector("#logInButton").onclick = (event) => {
-		console.log(`Log in for email: ${inputEmailEl.value} password:  ${inputPasswordEl.value}`);
-		firebase.auth().signInWithEmailAndPassword(inputEmailEl.value, inputPasswordEl.value).catch(function (error) {
-			var errorCode = error.code;
-			var errorMessage = error.message;
-			console.log("Existing account log in error", errorCode, errorMessage);
-		});
-	};
-
-	document.querySelector("#anonymousAuthButton").onclick = (event) => {
-		firebase.auth().signInAnonymously().catch(function (error) {
-			var errorCode = error.code;
-			var errorMessage = error.message;
-			console.log("Anonymous auth error", errorCode, errorMessage);
-		});
-	};
-	rhit.startFirebaseUI();
+	} else if (amount == -1){
+		if(rhit.channel == 9){
+			rhit.channel = 5;
+		} else if(rhit.channel == 1){
+			rhit.channel = 9;
+		} else {
+			rhit.channel -= 1;
+		}
+	} else if(amount == 0 && rhit.screensaver == 0){
+		document.getElementById("televisionImage").src = "images/screensaver.gif";
+		rhit.screensaver = 1;
+	} else if(amount == 0 && rhit.screensaver == 1){
+		document.getElementById("televisionImage").src = "images/tv_" + rhit.channel + ".jpeg";
+		rhit.screensaver = 0;
+	}
+	if(amount != 0){
+		rhit.updateNumber();
+	}
 };
 
-rhit.startFirebaseUI = function() {
-	var uiConfig = {
-		signInSuccessUrl: '/',
-		signInOptions: [
-			firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-			firebase.auth.EmailAuthProvider.PROVIDER_ID,
-			firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-			firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
-		],
-	};
-	const ui = new firebaseui.auth.AuthUI(firebase.auth());
-	ui.start('#firebaseui-auth-container', uiConfig);
+rhit.updateNumber = function () {
+	document.querySelector("#channelNum").innerHTML = "Ch. " + rhit.channel;
+	document.getElementById("televisionImage").src = "images/tv_" + rhit.channel + ".jpeg";
+};
+
+rhit.ClassName = class {
+	constructor() {
+
+	}
+
+	methodName() {
+
+	}
 }
+
+/* Main */
+/** function and class syntax examples */
+rhit.main = function () {
+	console.log("Ready");
+	const buttons = document.querySelectorAll("#mainButtons button");
+
+	for(const button of buttons){
+		button.onclick = (event) => {
+			const dataAmount = parseInt(button.dataset.amount);
+			//console.log('Amount', dataAmount, 'isMulti:', dataIsMultiplication);
+			rhit.updateCounter(dataAmount);
+		};
+	}
+};
 
 rhit.main();

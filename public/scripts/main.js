@@ -65,7 +65,7 @@ rhit.main = function () {
 
 rhit.startFirebaseUI = function() {
 	var uiConfig = {
-		signInSuccessUrl: '/',
+		signInSuccessUrl: '/main.html',
 		signInOptions: [
 			firebase.auth.GoogleAuthProvider.PROVIDER_ID,
 			firebase.auth.EmailAuthProvider.PROVIDER_ID,

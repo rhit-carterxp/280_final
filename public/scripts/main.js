@@ -62,37 +62,6 @@ rhit.main = function () {
         });
     };
     rhit.startFirebaseUI();
-
-    // JavaScript for handling the modal dialog
-    const modal = document.getElementById("myModal");
-    const btn = document.getElementById("openModal");
-    const span = document.getElementsByClassName("close")[0];
-
-    // When the user clicks the button, open the modal
-    btn.onclick = function() {
-        modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-
-    // Handle submit button click
-    document.getElementById("submitNumber").addEventListener("click", function() {
-        const numberInput = document.getElementById("numberInput").value;
-        // Do something with the entered number, e.g., send it to server
-        console.log("Entered number:", numberInput);
-        // Close the modal
-        modal.style.display = "none";
-    });
 };
 
 rhit.startFirebaseUI = function() {

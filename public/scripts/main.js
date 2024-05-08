@@ -31,6 +31,7 @@ rhit.main = function () {
 		console.log(`Sign out`);
 		firebase.auth().signOut().then(function () {
 			console.log("You are now signed out");
+			window.location.href = 'index.html'
 		}).catch(function (error) {
 			console.log("Sign out error");
 		});

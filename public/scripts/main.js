@@ -1,5 +1,10 @@
 var rhit = rhit || {};
 
+rhit.fbAuthManager = {
+    auth: firebase.auth(),
+    db: firebase.firestore(),
+};
+
 rhit.main = function () {
     console.log("Ready");
     this.initializeFirebaseUI();
@@ -7,6 +12,7 @@ rhit.main = function () {
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             console.log("The user is signed in", user.uid);
+            rhit.fbAuthManager.checkOrCreateUser(user);
             this.initializeTournamentSetup();
         } else {
             console.log("There is no user signed in!");
@@ -15,11 +21,22 @@ rhit.main = function () {
     });
 };
 
+rhit.fbAuthManager.checkOrCreateUser = function(user) {
+    const userRef = this.db.collection('users').doc(user.uid);
+    userRef.get().then(doc => {
+        if (!doc.exists) {
+            userRef.set({
+                email: user.email || null,
+                lastLogin: firebase.firestore.Timestamp.now()
+            }, { merge: true });
+        }
+    });
+};
+
 rhit.setupEventListeners = function() {
     document.getElementById('signOutButton').addEventListener('click', function() {
         firebase.auth().signOut().then(function() {
             console.log('Sign-out successful.');
-            // Redirect to index.html after signing out
             window.location.href = 'index.html';
         }).catch(function(error) {
             console.error('Sign-out error:', error);
@@ -31,6 +48,7 @@ rhit.initializeTournamentSetup = function() {
     document.querySelector("#submitNumber").addEventListener("click", function() {
         rhit.handleNumberSubmission();
     });
+
     document.querySelector("#submitName").addEventListener("click", rhit.handleNameSubmission);
     rhit.entrants = [];
     rhit.currentEntrantIndex = 0;
@@ -48,6 +66,12 @@ rhit.handleNumberSubmission = function() {
     document.querySelector("#entrantNameInput").style.display = "block";
     document.querySelector("#submitName").style.display = "block";
     document.querySelector("#entrantNameInput").focus();
+
+    const userRef = rhit.fbAuthManager.db.collection('users').doc(rhit.fbAuthManager.auth.currentUser.uid);
+    userRef.collection('tournaments').doc('currentTournament').set({
+        entrants: [],
+        totalEntrants: num
+    }, { merge: true });
 };
 
 rhit.handleNameSubmission = function() {
@@ -56,6 +80,10 @@ rhit.handleNameSubmission = function() {
         alert("Please enter a name!");
         return;
     }
+    const userRef = rhit.fbAuthManager.db.collection('users').doc(rhit.fbAuthManager.auth.currentUser.uid);
+    userRef.collection('tournaments').doc('currentTournament').update({
+        entrants: firebase.firestore.FieldValue.arrayUnion(name)
+    });
     rhit.entrants.push(name);
     document.querySelector("#entrantNameInput").value = ""; // Clear the input for the next name
     rhit.currentEntrantIndex++;

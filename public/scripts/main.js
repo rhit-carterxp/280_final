@@ -26,6 +26,7 @@ rhit.main = function () {
 
     const inputEmailEl = document.querySelector("#inputEmail");
     const inputPasswordEl = document.querySelector("#inputPassword");
+    const bracketContainer = document.querySelector("#bracketContainer");
 
     document.querySelector("#signOutButton").onclick = (event) => {
         console.log(`Sign out`);
@@ -61,10 +62,44 @@ rhit.main = function () {
             console.log("Anonymous auth error", errorCode, errorMessage);
         });
     };
+
+    document.querySelector("#submitNumber").addEventListener("click", function () {
+        const numberOfPeople = parseInt(document.getElementById("numberInput").value);
+        generateBracket(numberOfPeople);
+    });
+
+    function generateBracket(numberOfPeople) {
+        // Clear previous bracket if exists
+        bracketContainer.innerHTML = "";
+
+        // Check if numberOfPeople is a valid number
+        if (!isNaN(numberOfPeople) && numberOfPeople > 0) {
+            // Generate the bracket HTML based on numberOfPeople
+            const bracketHTML = generateBracketHTML(numberOfPeople);
+            // Append the bracket HTML to the container
+            bracketContainer.innerHTML = bracketHTML;
+        } else {
+            // If invalid number, display an error message
+            bracketContainer.innerHTML = "<p>Please enter a valid number of people.</p>";
+        }
+    }
+
+    function generateBracketHTML(numberOfPeople) {
+        // Implement your logic to generate the bracket HTML here
+        // You can use string concatenation or template literals to build the HTML
+        // Example:
+        let bracketHTML = "<div class='bracket'>";
+
+        // Your logic here to generate the bracket structure based on the number of people
+
+        bracketHTML += "</div>";
+        return bracketHTML;
+    }
+
     rhit.startFirebaseUI();
 };
 
-rhit.startFirebaseUI = function() {
+rhit.startFirebaseUI = function () {
     var uiConfig = {
         signInSuccessUrl: '/main.html',
         signInOptions: [

@@ -2,73 +2,85 @@ var rhit = rhit || {};
 
 rhit.main = function () {
     console.log("Ready");
-
+    this.initializeFirebaseUI();
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             console.log("The user is signed in ", user.uid);
+            this.initializeTournamentSetup();
         } else {
             console.log("There is no user signed in!");
+            // Optionally handle UI changes when no user is signed in
         }
     });
-
-    this.setUpAuthEventListeners();
-    rhit.startFirebaseUI();
 };
 
-document.addEventListener('DOMContentLoaded', function() {
-    rhit.setUpEventHandlers();
-});
-
-rhit.setUpEventHandlers = function() {
-    document.querySelector("#submitNumber").addEventListener("click", rhit.generateBracket);
-};
-
-rhit.setUpAuthEventListeners = function() {
-    document.querySelector("#signOutButton").addEventListener("click", function() {
-        firebase.auth().signOut().then(function() {
-            console.log("Signed out successfully!");
-            window.location.href = 'index.html'; // Redirect after sign out
-        }).catch(function(error) {
-            console.error("Sign out failed: ", error);
-        });
+rhit.initializeTournamentSetup = function() {
+    document.querySelector("#submitNumber").addEventListener("click", function() {
+        rhit.handleNumberSubmission();
     });
-    // other event listeners...
+
+    document.querySelector("#submitName").addEventListener("click", rhit.handleNameSubmission);
+    rhit.entrants = [];
+    rhit.currentEntrantIndex = 0;
 };
 
-rhit.generateBracket = function() {
-    const bracketSize = parseInt(document.querySelector("#numberInput").value);
-    if (isNaN(bracketSize) || bracketSize <= 0) {
+rhit.handleNumberSubmission = function() {
+    const num = parseInt(document.querySelector("#numberInput").value);
+    if (isNaN(num) || num <= 0) {
         alert("Please enter a valid number!");
         return;
     }
+    rhit.totalEntrants = num;
+    document.querySelector("#numberInput").style.display = "none";
+    document.querySelector("#submitNumber").style.display = "none";
+    document.querySelector("#entrantNameInput").style.display = "block";
+    document.querySelector("#submitName").style.display = "block";
+    document.querySelector("#entrantNameInput").focus();
+};
 
-    document.getElementById("myModal").style.display = "none";
+rhit.handleNameSubmission = function() {
+    const name = document.querySelector("#entrantNameInput").value.trim();
+    if (!name) {
+        alert("Please enter a name!");
+        return;
+    }
+    rhit.entrants.push(name);
+    document.querySelector("#entrantNameInput").value = ""; // Clear the input for the next name
+    rhit.currentEntrantIndex++;
+    if (rhit.currentEntrantIndex >= rhit.totalEntrants) {
+        document.getElementById("myModal").style.display = "none";
+        rhit.displayBracket();
+    }
+};
+
+rhit.displayBracket = function() {
     const bracketContainer = document.getElementById("bracketContainer");
     bracketContainer.innerHTML = "";
-
     const bracket = document.createElement("div");
     bracket.className = "bracket";
-    for (let i = 0; i < bracketSize; i++) {
-        const entrant = document.createElement("div");
-        entrant.className = "entrant";
-        entrant.textContent = `Entrant ${i + 1}`;
-        bracket.appendChild(entrant);
-    }
+    rhit.entrants.forEach((entrant) => {
+        const entrantDiv = document.createElement("div");
+        entrantDiv.className = "entrant";
+        entrantDiv.textContent = entrant;
+        bracket.appendChild(entrantDiv);
+    });
     bracketContainer.appendChild(bracket);
     bracketContainer.style.display = "block";
 };
 
-rhit.startFirebaseUI = function() {
-    const ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', {
-        signInSuccessUrl: '/main.html',
-        signInOptions: [
-            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-            firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-            firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
-        ],
-    });
+rhit.initializeFirebaseUI = function() {
+    if (document.getElementById('firebaseui-auth-container')) {
+        const ui = new firebaseui.auth.AuthUI(firebase.auth());
+        ui.start('#firebaseui-auth-container', {
+            signInSuccessUrl: 'main.html',
+            signInOptions: [
+                firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                firebase.auth.EmailAuthProvider.PROVIDER_ID,
+                firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+                firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
+            ],
+        });
+    }
 };
 
 rhit.main();

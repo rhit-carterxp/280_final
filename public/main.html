@@ -16,19 +16,27 @@
         <button id="signOutButton" type="button" class="btn text-light">Sign Out</button>
     </nav>
 
+    <!-- Modal for entering tournament details -->
     <div id="myModal" class="modal" style="display: block;">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Enter a Number</h2>
-            <input type="number" id="numberInput" placeholder="Enter the number of entrants">
+            <h2>Setup Tournament</h2>
+            <p>Enter the number of entrants:</p>
+            <input type="number" id="numberInput" placeholder="Number of entrants">
             <button id="submitNumber" class="btn btn-primary">Submit</button>
+            <p>Enter entrant's name:</p>
+            <input type="text" id="entrantNameInput" placeholder="Entrant's name" style="display: none;">
+            <button id="submitName" class="btn btn-primary" style="display: none;">Submit Name</button>
         </div>
     </div>
 
-    <div id="bracketContainer" style="display:none;"></div> <!-- This div will hold the tournament bracket -->
+    <!-- Container for the tournament bracket -->
+    <div id="bracketContainer" style="display:none;"></div>
 
-    <!-- <div id="firebaseui-auth-container"></div> Firebase Auth UI container -->
+    <!-- Firebase UI Authentication Container -->
+    <!-- <div id="firebaseui-auth-container"></div> -->
 
+    <!-- Scripts for functionality -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

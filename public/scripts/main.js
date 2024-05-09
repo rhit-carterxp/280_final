@@ -24,20 +24,15 @@ rhit.setUpEventHandlers = function() {
 };
 
 rhit.setUpAuthEventListeners = function() {
-    document.querySelector("#signOutButton").onclick = () => firebase.auth().signOut();
-    document.querySelector("#createAccountButton").onclick = () => {
-        const email = document.querySelector("#inputEmail").value;
-        const password = document.querySelector("#inputPassword").value;
-        firebase.auth().createUserWithEmailAndPassword(email, password);
-    };
-    document.querySelector("#logInButton").onclick = () => {
-        const email = document.querySelector("#inputEmail").value;
-        const password = document.querySelector("#inputPassword").value;
-        firebase.auth().signInWithEmailAndPassword(email, password);
-    };
-    document.querySelector("#anonymousAuthButton").onclick = () => {
-        firebase.auth().signInAnonymously();
-    };
+    document.querySelector("#signOutButton").addEventListener("click", function() {
+        firebase.auth().signOut().then(function() {
+            console.log("Signed out successfully!");
+            window.location.href = 'index.html'; // Redirect after sign out
+        }).catch(function(error) {
+            console.error("Sign out failed: ", error);
+        });
+    });
+    // other event listeners...
 };
 
 rhit.generateBracket = function() {

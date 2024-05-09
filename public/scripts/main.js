@@ -108,9 +108,9 @@ rhit.displayBracket = function() {
     bracketContainer.style.display = "block";
 };
 
-rhit.initializeFirebaseUI = function() {
+rhit.initializeFirebaseUI = function () {
     if (document.getElementById('firebaseui-auth-container')) {
-        const ui = new firebaseui.auth.AuthUI(firebase.auth());
+        const ui = new firebaseui.auth.AuthUI(rhit.fbAuthManager.auth);
         ui.start('#firebaseui-auth-container', {
             signInSuccessUrl: 'main.html',
             signInOptions: [
@@ -119,6 +119,12 @@ rhit.initializeFirebaseUI = function() {
                 firebase.auth.PhoneAuthProvider.PROVIDER_ID,
                 firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
             ],
+            callbacks: {
+                signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+                    window.location.href = redirectUrl || 'main.html';
+                    return false; // This still prevents the automatic redirect but manually redirects as needed.
+                }
+            }
         });
     }
 };

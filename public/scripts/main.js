@@ -3,9 +3,10 @@ var rhit = rhit || {};
 rhit.main = function () {
     console.log("Ready");
     this.initializeFirebaseUI();
+    this.setupEventListeners();
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-            console.log("The user is signed in ", user.uid);
+            console.log("The user is signed in", user.uid);
             this.initializeTournamentSetup();
         } else {
             console.log("There is no user signed in!");
@@ -14,11 +15,22 @@ rhit.main = function () {
     });
 };
 
+rhit.setupEventListeners = function() {
+    document.getElementById('signOutButton').addEventListener('click', function() {
+        firebase.auth().signOut().then(function() {
+            console.log('Sign-out successful.');
+            // Redirect to index.html after signing out
+            window.location.href = 'index.html';
+        }).catch(function(error) {
+            console.error('Sign-out error:', error);
+        });
+    });
+};
+
 rhit.initializeTournamentSetup = function() {
     document.querySelector("#submitNumber").addEventListener("click", function() {
         rhit.handleNumberSubmission();
     });
-
     document.querySelector("#submitName").addEventListener("click", rhit.handleNameSubmission);
     rhit.entrants = [];
     rhit.currentEntrantIndex = 0;

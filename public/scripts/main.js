@@ -17,7 +17,7 @@ rhit.fbAuthManager = {
                     uid: user.uid,
                     email: user.email || null,
                     lastLogin: firebase.firestore.Timestamp.now(),
-                    test: "This is just a test",
+                    test: "This is just a test"
                 }, { merge: true });
             } else {
                 console.log("Firestore document already exists for UID:", user.uid);
@@ -27,7 +27,7 @@ rhit.fbAuthManager = {
         }).catch((error) => {
             console.error("Error in checkOrCreateUser:", error);
         });
-    },
+    }, 
     handleAuthStateChanged: function(user) {
         console.log(user ? "The user is signed in" : "There is no user signed in!");
         if (user) {
@@ -78,8 +78,8 @@ rhit.tournamentManager = {
             alert("Please enter a name!");
             return;
         }
-        const userRef = rhit.fbAuthManager.db.collection('users').doc(user.uid);
-        userRef.collection('users').doc(user.uid).update({
+        const userRef = rhit.fbAuthManager.db.collection('users').doc(rhit.fbAuthManager.auth.currentUser.uid);
+        userRef.collection('tournaments').doc('currentTournament').update({
             entrants: firebase.firestore.FieldValue.arrayUnion(name)
         });
         this.entrants.push(name);
@@ -88,7 +88,7 @@ rhit.tournamentManager = {
         if (this.currentEntrantIndex >= this.totalEntrants) {
             document.getElementById("myModal").style.display = "none";
             this.displayBracket();
-        }
+        } //test
     },
     displayBracket: function() {
         const bracketContainer = document.getElementById("bracketContainer");

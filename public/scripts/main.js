@@ -66,7 +66,7 @@ rhit.tournamentManager = {
         document.querySelector("#submitName").style.display = "block";
         document.querySelector("#entrantNameInput").focus();
 
-        const userRef = rhit.fbAuthManager.db.collection('users').doc(user.uid);
+        const userRef = this.db.collection('users').doc(user.uid);
         return userRef.set({
             entrants: [],
             totalEntrants: num,

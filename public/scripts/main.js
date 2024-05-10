@@ -16,8 +16,7 @@ rhit.fbAuthManager = {
                 return userRef.set({
                     uid: user.uid,
                     email: user.email || null,
-                    tournament: 
-                    // lastLogin: firebase.firestore.Timestamp.now()
+                    lastLogin: firebase.firestore.Timestamp.now()
                 }, { merge: true });
             } else {
                 console.log("Firestore document already exists for UID:", user.uid);
@@ -66,8 +65,8 @@ rhit.tournamentManager = {
         document.querySelector("#submitName").style.display = "block";
         document.querySelector("#entrantNameInput").focus();
 
-        const userRef = rhit.fbAuthManager.db.collection('users').doc(rhit.fbAuthManager.auth.currentUser.uid);
-        userRef.collection('users').doc(user.uid).set({
+        const userRef = rhit.fbAuthManager.db.collection('users').doc(user.uid);
+        return userRef.set({
             entrants: [],
             totalEntrants: num
         }, { merge: true });

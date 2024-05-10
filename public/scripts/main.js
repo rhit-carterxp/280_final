@@ -7,26 +7,30 @@ rhit.fbAuthManager = {
         this.auth.onAuthStateChanged(this.handleAuthStateChanged.bind(this));
     },
     checkOrCreateUser: function(user) {
+        if (!user) return;  // Ensure the user is not null
+
         const userRef = this.db.collection('users').doc(user.uid);
         userRef.get().then((doc) => {
             if (!doc.exists) {
-                userRef.set({
+                console.log("No Firestore document for UID:", user.uid, "Creating one...");
+                return userRef.set({
                     email: user.email || null,
                     lastLogin: firebase.firestore.Timestamp.now()
                 }, { merge: true });
+            } else {
+                console.log("Firestore document already exists for UID:", user.uid);
             }
+        }).then(() => {
+            console.log("User document checked/created successfully.");
         }).catch((error) => {
             console.error("Error in checkOrCreateUser:", error);
         });
     },
     handleAuthStateChanged: function(user) {
+        console.log(user ? "The user is signed in" : "There is no user signed in!");
         if (user) {
-            console.log("The user is signed in", user.uid);
             this.checkOrCreateUser(user);
             rhit.tournamentManager.init();
-        } else {
-            console.log("There is no user signed in!");
-            // Optionally handle UI changes when no user is signed in
         }
     }
 };
@@ -40,10 +44,10 @@ rhit.tournamentManager = {
         document.querySelector("#submitName").addEventListener("click", this.handleNameSubmission.bind(this));
     },
     signOut: function() {
-        rhit.fbAuthManager.auth.signOut().then(function() {
+        rhit.fbAuthManager.auth.signOut().then(() => {
             console.log('Sign-out successful.');
             window.location.href = 'index.html';
-        }).catch(function(error) {
+        }).catch((error) => {
             console.error('Sign-out error:', error);
         });
     },

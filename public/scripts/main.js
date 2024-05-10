@@ -17,7 +17,7 @@ rhit.fbAuthManager = {
                     uid: user.uid,
                     email: user.email || null,
                     lastLogin: firebase.firestore.Timestamp.now(),
-                    test: "This is just a test"
+                    test: "This is just a test",
                 }, { merge: true });
             } else {
                 console.log("Firestore document already exists for UID:", user.uid);

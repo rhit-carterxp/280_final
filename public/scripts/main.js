@@ -79,7 +79,7 @@ rhit.tournamentManager = {
             return;
         }
         const userRef = rhit.fbAuthManager.db.collection('users').doc(rhit.fbAuthManager.auth.currentUser.uid);
-        userRef.collection('users').doc(rhit.fbAuthManager.auth.currentUser.uid).update({
+        userRef.update({
             entrants: firebase.firestore.FieldValue.arrayUnion(name)
         });
         this.entrants.push(name);

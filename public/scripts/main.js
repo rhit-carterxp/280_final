@@ -14,6 +14,7 @@ rhit.fbAuthManager = {
             if (!doc.exists) {
                 console.log("No Firestore document for UID:", user.uid, "Creating one...");
                 return userRef.set({
+                    uid: user.uid,
                     email: user.email || null,
                     lastLogin: firebase.firestore.Timestamp.now()
                 }, { merge: true });

@@ -66,7 +66,7 @@ rhit.tournamentManager = {
         document.querySelector("#submitName").style.display = "block";
         document.querySelector("#entrantNameInput").focus();
 
-        const userRef = this.db.collection('users').doc(user.uid);
+        const userRef = rhit.fbAuthManager.db.collection('users').doc(user.uid);
         return userRef.set({
             entrants: [],
             totalEntrants: num,
@@ -79,7 +79,7 @@ rhit.tournamentManager = {
             return;
         }
         const userRef = rhit.fbAuthManager.db.collection('users').doc(rhit.fbAuthManager.auth.currentUser.uid);
-        userRef.collection('tournaments').doc('currentTournament').update({
+        userRef.collection('users').doc(user.uid).update({
             entrants: firebase.firestore.FieldValue.arrayUnion(name)
         });
         this.entrants.push(name);

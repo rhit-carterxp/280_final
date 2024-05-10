@@ -16,6 +16,7 @@ rhit.fbAuthManager = {
                 return userRef.set({
                     uid: user.uid,
                     email: user.email || null,
+                    tournament: 
                     // lastLogin: firebase.firestore.Timestamp.now()
                 }, { merge: true });
             } else {
@@ -66,7 +67,7 @@ rhit.tournamentManager = {
         document.querySelector("#entrantNameInput").focus();
 
         const userRef = rhit.fbAuthManager.db.collection('users').doc(rhit.fbAuthManager.auth.currentUser.uid);
-        userRef.collection('tournaments').doc('currentTournament').set({
+        userRef.collection('users').doc(user.uid).set({
             entrants: [],
             totalEntrants: num
         }, { merge: true });

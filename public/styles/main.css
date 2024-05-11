@@ -14,57 +14,74 @@ body {
 /* Tournament Bracket Specific Styles */
 .bracket {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    gap: 10px;
     padding: 20px;
     background: #FFFFFF; /* White background for the bracket area */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     margin: auto; /* Centering the bracket in the page */
+    overflow-x: auto; /* Allows horizontal scrolling */
 }
 
 .round {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     padding: 10px;
+    align-items: center;
 }
 
 .match {
+    display: flex;
+    flex-direction: column;
     background-color: #f8f8f8;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #cccccc; /* Light grey border for each match */
+    cursor: pointer; /* Makes it clear the elements are interactive */
 }
 
 .entrant {
     padding: 5px;
     border-bottom: 1px solid #ccc;
     text-align: center; /* Center align the entrant's name */
+    cursor: pointer; /* Indicates that the entrant can be selected */
+}
+
+.entrant:hover {
+    background-color: #e2e2e2; /* Highlights entrants on hover */
 }
 
 .entrant:last-child {
     border-bottom: none;
 }
 
-/* Additional styling for better visual separation of rounds */
+/* Ensures visual consistency and alignment between rounds */
 .round:not(:last-child)::after {
     content: '';
     display: block;
-    height: 2px;
+    width: 2px;
     background: #ccc;
-    margin: 20px 0;
+    margin: 0 10px;
+    height: 100%;
 }
 
 /* Style adjustments for small screens or mobile devices */
 @media (max-width: 768px) {
     .bracket {
         flex-direction: column;
-        padding: 10px;
+        align-items: center;
     }
 
     .round {
         align-items: center;
+        width: 100%; /* Ensures rounds are full-width on small screens */
+    }
+
+    .match {
+        flex-direction: row;
+        justify-content: center;
     }
 }

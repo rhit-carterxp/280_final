@@ -5,24 +5,34 @@ body {
 .navbar {
     background-color: #800000;
     color: white;
+    height: 50px; /* Example fixed height, adjust as needed */
+    position: fixed; /* Fixed positioning to keep navbar on top */
+    top: 0;
+    width: 100%;
+    z-index: 1000; /* High z-index to keep navbar above other content */
+    padding: 10px 20px; /* Padding for visual appeal */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15); /* Optional shadow for depth */
 }
 
 .page-container {
-    margin-top: 75px;
+    margin-top: 75px; /* Adjusted to ensure no clipping with navbar */
+    width: 100%; /* Ensures the container takes full width */
+    padding: 20px; /* Padding for spacing around internal content */
 }
 
 /* Tournament Bracket Specific Styles */
 .bracket {
     display: flex;
     justify-content: space-evenly;
-    align-items: flex-start;
+    align-items: center; /* Adjusted to center align items */
     gap: 10px;
     padding: 20px;
-    background: #FFFFFF; /* White background for the bracket area */
+    background: #FFFFFF;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    margin: auto; /* Centering the bracket in the page */
+    margin: 0 auto; /* Centered horizontally */
     overflow-x: auto; /* Allows horizontal scrolling */
+    padding-bottom: 20px; /* Additional padding to avoid clipping */
 }
 
 .round {
@@ -31,6 +41,7 @@ body {
     gap: 10px;
     padding: 10px;
     align-items: center;
+    justify-content: center; /* Center rounds vertically */
 }
 
 .match {
@@ -39,33 +50,23 @@ body {
     background-color: #f8f8f8;
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid #cccccc; /* Light grey border for each match */
-    cursor: pointer; /* Makes it clear the elements are interactive */
+    border: 1px solid #cccccc;
+    cursor: pointer;
 }
 
 .entrant {
     padding: 5px;
     border-bottom: 1px solid #ccc;
-    text-align: center; /* Center align the entrant's name */
-    cursor: pointer; /* Indicates that the entrant can be selected */
+    text-align: center;
+    cursor: pointer;
 }
 
 .entrant:hover {
-    background-color: #e2e2e2; /* Highlights entrants on hover */
+    background-color: #e2e2e2;
 }
 
 .entrant:last-child {
     border-bottom: none;
-}
-
-/* Ensures visual consistency and alignment between rounds */
-.round:not(:last-child)::after {
-    content: '';
-    display: block;
-    width: 2px;
-    background: #ccc;
-    margin: 0 10px;
-    height: 100%;
 }
 
 /* Style adjustments for small screens or mobile devices */
@@ -77,7 +78,7 @@ body {
 
     .round {
         align-items: center;
-        width: 100%; /* Ensures rounds are full-width on small screens */
+        width: 100%;
     }
 
     .match {

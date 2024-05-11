@@ -10,3 +10,61 @@ body {
 .page-container {
     margin-top: 75px;
 }
+
+/* Tournament Bracket Specific Styles */
+.bracket {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: #FFFFFF; /* White background for the bracket area */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin: auto; /* Centering the bracket in the page */
+}
+
+.round {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px;
+}
+
+.match {
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #cccccc; /* Light grey border for each match */
+}
+
+.entrant {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    text-align: center; /* Center align the entrant's name */
+}
+
+.entrant:last-child {
+    border-bottom: none;
+}
+
+/* Additional styling for better visual separation of rounds */
+.round:not(:last-child)::after {
+    content: '';
+    display: block;
+    height: 2px;
+    background: #ccc;
+    margin: 20px 0;
+}
+
+/* Style adjustments for small screens or mobile devices */
+@media (max-width: 768px) {
+    .bracket {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .round {
+        align-items: center;
+    }
+}

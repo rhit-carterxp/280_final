@@ -7,7 +7,7 @@ rhit.fbAuthManager = {
         this.auth.onAuthStateChanged(this.handleAuthStateChanged.bind(this));
     },
     checkOrCreateUser: function(user) {
-        if (!user) return;  // Ensure the user is not null
+        if (!user) return;
 
         const userRef = this.db.collection('users').doc(user.uid);
         userRef.get().then((doc) => {
@@ -40,6 +40,7 @@ rhit.fbAuthManager = {
 rhit.tournamentManager = {
     entrants: [],
     currentEntrantIndex: 0,
+    totalEntrants: 0, // Ensure this property is defined to track the total number of entrants
     init: function() {
         document.getElementById('signOutButton').addEventListener('click', this.signOut);
         document.querySelector("#submitNumber").addEventListener("click", this.handleNumberSubmission.bind(this));
@@ -88,19 +89,45 @@ rhit.tournamentManager = {
         if (this.currentEntrantIndex >= this.totalEntrants) {
             document.getElementById("myModal").style.display = "none";
             this.displayBracket();
-        } //test
+        }
     },
     displayBracket: function() {
         const bracketContainer = document.getElementById("bracketContainer");
         bracketContainer.innerHTML = "";
         const bracket = document.createElement("div");
         bracket.className = "bracket";
-        this.entrants.forEach((entrant) => {
-            const entrantDiv = document.createElement("div");
-            entrantDiv.className = "entrant";
-            entrantDiv.textContent = entrant;
-            bracket.appendChild(entrantDiv);
-        });
+
+        let numRounds = Math.ceil(Math.log2(this.entrants.length));
+        let numMatches = this.entrants.length / 2;
+
+        for (let round = 1; round <= numRounds; round++) {
+            const roundDiv = document.createElement("div");
+            roundDiv.className = "round round-" + round;
+            bracket.appendChild(roundDiv);
+
+            for (let match = 0; match < numMatches; match++) {
+                const matchDiv = document.createElement("div");
+                matchDiv.className = "match";
+
+                const entrant1 = this.entrants[match * 2];
+                const entrant2 = this.entrants[match * 2 + 1];
+
+                const entrantDiv1 = document.createElement("div");
+                entrantDiv1.className = "entrant";
+                entrantDiv1.textContent = entrant1 ? entrant1 : "TBD";
+
+                const entrantDiv2 = document.createElement("div");
+                entrantDiv2.className = "entrant";
+                entrantDiv2.textContent = entrant2 ? entrant2 : "TBD";
+
+                matchDiv.appendChild(entrantDiv1);
+                matchDiv.appendChild(entrantDiv2);
+                roundDiv.appendChild(matchDiv);
+            }
+
+            numMatches /= 2;
+        }
+
         bracketContainer.appendChild(bracket);
         bracketContainer.style.display = "block";
     }

@@ -1,88 +1,76 @@
 body {
     background: #DDDDDD;
+    margin: 0; /* Ensures there is no default body margin */
+    padding: 0; /* Ensures there is no default body padding */
+    font-family: Arial, sans-serif; /* Optional: Defines a uniform font */
 }
 
 .navbar {
     background-color: #800000;
     color: white;
     height: 50px; /* Example fixed height, adjust as needed */
-    position: fixed; /* Fixed positioning to keep navbar on top */
+    position: fixed; /* Keeps navbar at the top of the viewport */
     top: 0;
-    width: 100%;
-    z-index: 1000; /* High z-index to keep navbar above other content */
-    padding: 10px 20px; /* Padding for visual appeal */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15); /* Optional shadow for depth */
+    left: 0;
+    right: 0; /* Ensures navbar spans the full width */
+    z-index: 1000; /* Keeps navbar above all other content */
+    padding: 10px 20px; /* Padding for content within navbar */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15); /* Shadow for depth */
 }
 
 .page-container {
-    margin-top: 75px; /* Adjusted to ensure no clipping with navbar */
-    width: 100%; /* Ensures the container takes full width */
-    padding: 20px; /* Padding for spacing around internal content */
+    padding-top: 75px; /* Adds space equivalent to navbar's height */
+    padding-left: 20px; /* Left padding for content alignment */
+    padding-right: 20px; /* Right padding for content alignment */
 }
 
 /* Tournament Bracket Specific Styles */
 .bracket {
     display: flex;
     justify-content: space-evenly;
-    align-items: center; /* Adjusted to center align items */
-    gap: 10px;
+    align-items: center; /* Aligns items vertically */
+    gap: 20px; /* Space between rounds */
     padding: 20px;
-    background: #FFFFFF;
+    background: #FFFFFF; /* White background for clarity */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    margin: 0 auto; /* Centered horizontally */
-    overflow-x: auto; /* Allows horizontal scrolling */
-    padding-bottom: 20px; /* Additional padding to avoid clipping */
+    margin: 20px auto; /* Horizontal centering and spacing from top */
+    overflow-x: auto; /* Allows horizontal scrolling if necessary */
 }
 
 .round {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px; /* Space between matches in a round */
     padding: 10px;
-    align-items: center;
-    justify-content: center; /* Center rounds vertically */
+    align-items: center; /* Centers matches within a round */
 }
 
 .match {
-    display: flex;
-    flex-direction: column;
     background-color: #f8f8f8;
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid #cccccc;
-    cursor: pointer;
+    border: 1px solid #cccccc; /* Light grey border */
 }
 
 .entrant {
     padding: 5px;
-    border-bottom: 1px solid #ccc;
-    text-align: center;
-    cursor: pointer;
-}
-
-.entrant:hover {
-    background-color: #e2e2e2;
+    border-bottom: 1px solid #ccc; /* Separator between entrants */
+    text-align: center; /* Centers entrant names */
 }
 
 .entrant:last-child {
-    border-bottom: none;
+    border-bottom: none; /* Removes border from last entrant */
 }
 
-/* Style adjustments for small screens or mobile devices */
+/* Responsive design adjustments */
 @media (max-width: 768px) {
     .bracket {
-        flex-direction: column;
-        align-items: center;
+        flex-direction: column; /* Stacks rounds vertically on small screens */
+        align-items: center; /* Ensures central alignment */
     }
 
     .round {
-        align-items: center;
-        width: 100%;
-    }
-
-    .match {
-        flex-direction: row;
-        justify-content: center;
+        align-items: center; /* Centers matches in small screens */
     }
 }

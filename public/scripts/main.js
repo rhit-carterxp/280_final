@@ -98,46 +98,44 @@ rhit.tournamentManager = {
         bracket.className = "bracket";
         bracket.style.display = "flex";  // Set bracket display to flex for horizontal layout
 
-        let numRounds = Math.ceil(Math.log2(this.entrants.length));
-        let numMatches = this.entrants.length / 2;
+        let numRounds = Math.ceil(Math.log2(this.totalEntrants));
         let matches = Array.from({ length: numRounds }, () => []);
 
-        // Initialize matches for the first round
-        for (let i = 0; i < this.entrants.length; i += 2) {
-            matches[0].push([this.entrants[i], this.entrants[i + 1] || "TBD"]);
+        // Initialize matches for all rounds
+        for (let round = 0; round < numRounds; round++) {
+            let numMatches = Math.pow(2, numRounds - round - 1);
+            matches[round] = new Array(numMatches).fill(["TBD", "TBD"]);
         }
 
-        // Create the structure for the remaining rounds
-        for (let round = 1; round < numRounds; round++) {
-            for (let match = 0; match < Math.pow(2, numRounds-round-1); match++) {
-                matches[round].push(["TBD", "TBD"]);
+        // Populate first round with entrants
+        this.entrants.forEach((entrant, index) => {
+            let matchIndex = Math.floor(index / 2);
+            matches[0][matchIndex][index % 2] = entrant;
+        });
+
+        // Interactive match handling
+        const updateMatchWinner = (entrant, roundIndex, matchIndex, position) => {
+            if (roundIndex < numRounds - 1) {
+                let nextMatchIndex = Math.floor(matchIndex / 2);
+                let nextPosition = matchIndex % 2 === 0 ? 0 : 1;
+                matches[roundIndex + 1][nextMatchIndex][nextPosition] = entrant;
+                this.displayBracket(); // Redraw bracket
             }
-        }
+        };
 
-        matches.forEach((roundMatches, roundIndex) => {
+        // Generate HTML for matches
+        matches.forEach((round, roundIndex) => {
             const roundDiv = document.createElement("div");
             roundDiv.className = "round";
-            roundMatches.forEach((match, matchIndex) => {
+            round.forEach((match, matchIndex) => {
                 const matchDiv = document.createElement("div");
                 matchDiv.className = "match";
-
-                match.forEach(entrant => {
-                    const entrantDiv = document.createElement("div");
+                match.forEach((entrant, position) => {
+                    const entrantDiv = document.createElement("button");
                     entrantDiv.className = "entrant";
                     entrantDiv.textContent = entrant;
+                    entrantDiv.onclick = () => updateMatchWinner(entrant, roundIndex, matchIndex, position);
                     matchDiv.appendChild(entrantDiv);
-
-                    if (roundIndex === 0) {
-                        entrantDiv.onclick = () => {
-                            if (entrant !== "TBD") {
-                                // Find where to place the winner in the next round
-                                let nextMatchIndex = Math.floor(matchIndex / 2);
-                                let position = matchIndex % 2 === 0 ? 0 : 1;
-                                matches[roundIndex + 1][nextMatchIndex][position] = entrant;
-                                this.displayBracket(); // Redraw bracket with updated state
-                            }
-                        };
-                    }
                 });
                 roundDiv.appendChild(matchDiv);
             });
@@ -161,12 +159,12 @@ rhit.initializeFirebaseUI = function() {
                 firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
             ],
             callbacks: {
-        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-            window.location.href = redirectUrl || 'main.html';
-            return false; // Prevents automatic redirect.
-        }
-    }
-});
+                signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+                    window.location.href = redirectUrl || 'main.html';
+                    return false; // Prevents automatic redirect.
+                }
+            }
+        });
     }
 };
 

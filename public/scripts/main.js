@@ -8,7 +8,6 @@ rhit.fbAuthManager = {
     },
     checkOrCreateUser: function(user) {
         if (!user) return;
-
         const userRef = this.db.collection('users').doc(user.uid);
         userRef.get().then((doc) => {
             if (!doc.exists) {
@@ -102,12 +101,10 @@ rhit.tournamentManager = {
         let numMatches = this.entrants.length / 2;
         let matches = Array.from({ length: numRounds }, () => []);
 
-        // Initialize matches for the first round
         for (let i = 0; i < this.entrants.length; i += 2) {
             matches[0].push([this.entrants[i], this.entrants[i + 1] || "TBD"]);
         }
 
-        // Create the structure for the remaining rounds
         for (let round = 1; round < numRounds; round++) {
             for (let match = 0; match < Math.pow(2, numRounds-round-1); match++) {
                 matches[round].push(["TBD", "TBD"]);
@@ -122,19 +119,18 @@ rhit.tournamentManager = {
                 matchDiv.className = "match";
 
                 match.forEach(entrant => {
-                    const entrantDiv = document.createElement("div");
-                    entrantDiv.className = "entrant";
-                    entrantDiv.textContent = entrant;
-                    matchDiv.appendChild(entrantDiv);
+                    const entrantButton = document.createElement("button");
+                    entrantButton.className = "entrant";
+                    entrantButton.textContent = entrant;
+                    matchDiv.appendChild(entrantButton);
 
                     if (roundIndex === 0) {
-                        entrantDiv.onclick = () => {
+                        entrantButton.onclick = () => {
                             if (entrant !== "TBD") {
-                                // Find where to place the winner in the next round
                                 let nextMatchIndex = Math.floor(matchIndex / 2);
                                 let position = matchIndex % 2 === 0 ? 0 : 1;
                                 matches[roundIndex + 1][nextMatchIndex][position] = entrant;
-                                this.displayBracket(); // Redraw bracket with updated state
+                                this.displayBracket();
                             }
                         };
                     }
@@ -145,7 +141,7 @@ rhit.tournamentManager = {
         });
 
         bracketContainer.appendChild(bracket);
-        bracketContainer.style.display = "block";  // Ensure the bracket is visible
+        bracketContainer.style.display = "block";
     }
 };
 
@@ -161,12 +157,12 @@ rhit.initializeFirebaseUI = function() {
                 firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
             ],
             callbacks: {
-        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-            window.location.href = redirectUrl || 'main.html';
-            return false; // Prevents automatic redirect.
-        }
-    }
-});
+                signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+                    window.location.href = redirectUrl || 'main.html';
+                    return false; // Prevents automatic redirect.
+                }
+            }
+        });
     }
 };
 

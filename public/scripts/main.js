@@ -42,7 +42,7 @@ rhit.tournamentManager = {
     currentEntrantIndex: 0,
     totalEntrants: 0,
     init: function() {
-        document.getElementById('signOutButton').addEventListener('click', this.signOut);
+        document.getElementById('signOutButton').addEventListener('click', this.signOut.bind(this));
         document.querySelector("#submitNumber").addEventListener("click", this.handleNumberSubmission.bind(this));
         document.querySelector("#submitName").addEventListener("click", this.handleNameSubmission.bind(this));
     },
@@ -98,16 +98,13 @@ rhit.tournamentManager = {
         bracket.className = "bracket";
         bracket.style.display = "flex";  // Set bracket display to flex for horizontal layout
 
-        let numRounds = Math.ceil(Math.log2(this.entrants.length));
-        let numMatches = this.entrants.length / 2;
+        let numRounds = Math.ceil(Math.log2(this.totalEntrants));
         let matches = Array.from({ length: numRounds }, () => []);
 
-        // Initialize matches for the first round
         for (let i = 0; i < this.entrants.length; i += 2) {
             matches[0].push([this.entrants[i], this.entrants[i + 1] || "TBD"]);
         }
 
-        // Create the structure for the remaining rounds
         for (let round = 1; round < numRounds; round++) {
             for (let match = 0; match < Math.pow(2, numRounds-round-1); match++) {
                 matches[round].push(["TBD", "TBD"]);
@@ -120,24 +117,20 @@ rhit.tournamentManager = {
             roundMatches.forEach((match, matchIndex) => {
                 const matchDiv = document.createElement("div");
                 matchDiv.className = "match";
-
-                match.forEach(entrant => {
-                    const entrantDiv = document.createElement("div");
-                    entrantDiv.className = "entrant";
-                    entrantDiv.textContent = entrant;
-                    matchDiv.appendChild(entrantDiv);
-
-                    if (roundIndex === 0) {
-                        entrantDiv.onclick = () => {
-                            if (entrant !== "TBD") {
-                                // Find where to place the winner in the next round
-                                let nextMatchIndex = Math.floor(matchIndex / 2);
-                                let position = matchIndex % 2 === 0 ? 0 : 1;
-                                matches[roundIndex + 1][nextMatchIndex][position] = entrant;
-                                this.displayBracket(); // Redraw bracket with updated state
-                            }
-                        };
-                    }
+                match.forEach((entrant, position) => {
+                    const entrantButton = document.createElement("button");
+                    entrantButton.className = "entrant";
+                    entrantButton.textContent = entrant;
+                    entrantButton.onclick = () => {
+                        if (entrant !== "TBD" && roundIndex + 1 < numRounds) {
+                            let nextRoundMatches = matches[roundIndex + 1];
+                            let nextMatchIndex = Math.floor(matchIndex / 2);
+                            let nextPosition = matchIndex % 2 === 0 ? 0 : 1;
+                            nextRoundMatches[nextMatchIndex][nextPosition] = entrant;
+                            this.displayBracket(); // Redraw bracket with updated state
+                        }
+                    };
+                    matchDiv.appendChild(entrantButton);
                 });
                 roundDiv.appendChild(matchDiv);
             });
@@ -145,7 +138,6 @@ rhit.tournamentManager = {
         });
 
         bracketContainer.appendChild(bracket);
-        bracketContainer.style.display = "block";  // Ensure the bracket is visible
     }
 };
 
@@ -161,12 +153,12 @@ rhit.initializeFirebaseUI = function() {
                 firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
             ],
             callbacks: {
-        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-            window.location.href = redirectUrl || 'main.html';
-            return false; // Prevents automatic redirect.
-        }
-    }
-});
+                signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+                    window.location.href = redirectUrl || 'main.html';
+                    return false; // Prevents automatic redirect.
+                }
+            }
+        });
     }
 };
 

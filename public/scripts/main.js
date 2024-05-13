@@ -92,11 +92,6 @@ rhit.tournamentManager = {
     },
     displayBracket: function() {
         const bracketContainer = document.getElementById("bracketContainer");
-        if (!bracketContainer) {
-            console.error("Bracket container not found.");
-            return;
-        }
-
         bracketContainer.innerHTML = "";
         const bracket = document.createElement("div");
         bracket.className = "bracket";
@@ -105,27 +100,16 @@ rhit.tournamentManager = {
         let numRounds = Math.ceil(Math.log2(this.entrants.length));
         let matches = Array.from({ length: numRounds }, () => []);
 
-        // Initialize first round matches
         for (let i = 0; i < this.entrants.length; i += 2) {
             matches[0].push([this.entrants[i], this.entrants[i + 1] || "TBD"]);
         }
 
-        // Prepare future rounds with placeholders
         for (let round = 1; round < numRounds; round++) {
-            for (let match = 0; match < Math.pow(2, numRounds - round - 1); match++) {
+            for (let match = 0; match < Math.pow(2, numRounds-round-1); match++) {
                 matches[round].push(["TBD", "TBD"]);
             }
         }
 
-        // Function to update and display subsequent rounds
-        const updateAndDisplayNextRound = (entrant, nextRound, nextMatchIndex, position) => {
-            if (nextRound < matches.length) {
-                matches[nextRound][nextMatchIndex][position] = entrant;
-                this.displayBracket(); // Redraw bracket with updated state
-            }
-        };
-
-        // Generate the bracket UI
         matches.forEach((roundMatches, roundIndex) => {
             const roundDiv = document.createElement("div");
             roundDiv.className = "round";
@@ -137,15 +121,19 @@ rhit.tournamentManager = {
                     const entrantButton = document.createElement("button");
                     entrantButton.className = "entrant";
                     entrantButton.textContent = entrant;
-                    entrantButton.onclick = () => {
-                        let nextRound = roundIndex + 1;
-                        if (nextRound < matches.length) {
-                            let nextMatchIndex = Math.floor(matchIndex / 2);
-                            let position = matchIndex % 2 === 0 ? 0 : 1;
-                            updateAndDisplayNextRound(entrant, nextRound, nextMatchIndex, position);
-                        }
-                    };
                     matchDiv.appendChild(entrantButton);
+
+                    if (entrant !== "TBD") {
+                        entrantButton.onclick = () => {
+                            let nextRound = roundIndex + 1;
+                            if (nextRound < matches.length) {
+                                let nextMatchIndex = Math.floor(matchIndex / 2);
+                                let position = matchIndex % 2 === 0 ? 0 : 1;
+                                matches[nextRound][nextMatchIndex][position] = entrant;
+                                this.displayBracket(); // Redraw bracket with updated state
+                            }
+                        };
+                    }
                 });
                 roundDiv.appendChild(matchDiv);
             });
@@ -153,6 +141,7 @@ rhit.tournamentManager = {
         });
 
         bracketContainer.appendChild(bracket);
+        bracketContainer.style.display = "block";
     }
 };
 

@@ -92,6 +92,10 @@ rhit.tournamentManager = {
     },
     displayBracket: function() {
         const bracketContainer = document.getElementById("bracketContainer");
+        if (!bracketContainer) {
+            console.error("Bracket container not found.");
+            return;
+        }
         bracketContainer.innerHTML = "";
         const bracket = document.createElement("div");
         bracket.className = "bracket";
@@ -158,7 +162,7 @@ rhit.initializeFirebaseUI = function() {
             ],
             callbacks: {
                 signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-                    window.location.href = redirectUrl || 'main.html';
+                    window.location.href = redirectUrl or 'main.html';
                     return false; // Prevents automatic redirect.
                 }
             }

@@ -7,28 +7,32 @@ rhit.fbAuthManager = {
         this.auth.onAuthStateChanged(this.handleAuthStateChanged.bind(this));
     },
     checkOrCreateUser: function(user) {
-        if (!user) return;
+        if (!user) {
+            console.log("No user is currently signed in.");
+            return;
+        }
         const userRef = this.db.collection('users').doc(user.uid);
         userRef.get().then((doc) => {
             if (!doc.exists) {
-                console.log("No Firestore document for UID:", user.uid, "Creating one...");
-                return userRef.set({
+                console.log("Creating Firestore document for UID:", user.uid);
+                userRef.set({
                     uid: user.uid,
                     email: user.email || null,
-                    lastLogin: firebase.firestore.Timestamp.now(),
-                    test: "This is just a test"
-                }, { merge: true });
+                    lastLogin: firebase.firestore.Timestamp.now()
+                }, { merge: true }).then(() => {
+                    console.log("New user document created.");
+                }).catch((error) => {
+                    console.error("Error creating new user document:", error);
+                });
             } else {
-                console.log("Firestore document already exists for UID:", user.uid);
+                console.log("Existing Firestore document found for UID:", user.uid);
             }
-        }).then(() => {
-            console.log("User document checked/created successfully.");
         }).catch((error) => {
-            console.error("Error in checkOrCreateUser:", error);
+            console.error("Error accessing Firestore:", error);
         });
     },
     handleAuthStateChanged: function(user) {
-        console.log(user ? "The user is signed in" : "There is no user signed in!");
+        console.log(user ? "User is signed in." : "No user is signed in.");
         if (user) {
             this.checkOrCreateUser(user);
             rhit.tournamentManager.init();
@@ -41,7 +45,7 @@ rhit.tournamentManager = {
     currentEntrantIndex: 0,
     totalEntrants: 0,
     init: function() {
-        document.getElementById('signOutButton').addEventListener('click', this.signOut);
+        document.getElementById('signOutButton').addEventListener('click', this.signOut.bind(this));
         document.querySelector("#submitNumber").addEventListener("click", this.handleNumberSubmission.bind(this));
         document.querySelector("#submitName").addEventListener("click", this.handleNameSubmission.bind(this));
     },
@@ -54,7 +58,7 @@ rhit.tournamentManager = {
         });
     },
     handleNumberSubmission: function() {
-        const num = parseInt(document.querySelector("#numberInput").value);
+        const num = parseInt(document.querySelector("#numberInput").value, 10);
         if (isNaN(num) || num <= 0) {
             alert("Please enter a valid number!");
             return;
@@ -64,13 +68,6 @@ rhit.tournamentManager = {
         document.querySelector("#submitNumber").style.display = "none";
         document.querySelector("#entrantNameInput").style.display = "block";
         document.querySelector("#submitName").style.display = "block";
-        document.querySelector("#entrantNameInput").focus();
-
-        const userRef = rhit.fbAuthManager.db.collection('users').doc(rhit.fbAuthManager.auth.currentUser.uid);
-        return userRef.set({
-            entrants: [],
-            totalEntrants: num
-        }, { merge: true });
     },
     handleNameSubmission: function() {
         const name = document.querySelector("#entrantNameInput").value.trim();
@@ -81,14 +78,18 @@ rhit.tournamentManager = {
         const userRef = rhit.fbAuthManager.db.collection('users').doc(rhit.fbAuthManager.auth.currentUser.uid);
         userRef.update({
             entrants: firebase.firestore.FieldValue.arrayUnion(name)
+        }).then(() => {
+            console.log("Entrant added successfully.");
+            this.entrants.push(name);
+            document.querySelector("#entrantNameInput").value = ""; // Clear the input for the next name
+            this.currentEntrantIndex++;
+            if (this.currentEntrantIndex >= this.totalEntrants) {
+                document.getElementById("myModal").style.display = "none";
+                this.displayBracket();
+            }
+        }).catch((error) => {
+            console.error("Error updating entrants:", error);
         });
-        this.entrants.push(name);
-        document.querySelector("#entrantNameInput").value = ""; // Clear the input for the next name
-        this.currentEntrantIndex++;
-        if (this.currentEntrantIndex >= this.totalEntrants) {
-            document.getElementById("myModal").style.display = "none";
-            this.displayBracket();
-        }
     },
     displayBracket: function() {
         const bracketContainer = document.getElementById("bracketContainer");
@@ -162,7 +163,7 @@ rhit.initializeFirebaseUI = function() {
             ],
             callbacks: {
                 signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-                    window.location.href = redirectUrl or 'main.html';
+                    window.location.href = redirectUrl || 'main.html';
                     return false; // Prevents automatic redirect.
                 }
             }

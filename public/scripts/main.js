@@ -1,9 +1,11 @@
 var rhit = rhit || {};
 
+/** Firebase Authentication and Firestore Manager **/
 rhit.fbAuthManager = {
     auth: firebase.auth(),
     db: firebase.firestore(),
     init: function() {
+        console.log("Initializing Firebase Authentication...");
         this.auth.onAuthStateChanged(this.handleAuthStateChanged.bind(this));
     },
     checkOrCreateUser: function(user) {
@@ -40,11 +42,14 @@ rhit.fbAuthManager = {
     }
 };
 
+/** Tournament Management Logic **/
 rhit.tournamentManager = {
     entrants: [],
     currentEntrantIndex: 0,
     totalEntrants: 0,
+    matches: [],
     init: function() {
+        console.log("Initializing Tournament Management...");
         document.getElementById('signOutButton').addEventListener('click', this.signOut.bind(this));
         document.querySelector("#submitNumber").addEventListener("click", this.handleNumberSubmission.bind(this));
         document.querySelector("#submitName").addEventListener("click", this.handleNameSubmission.bind(this));
@@ -68,6 +73,7 @@ rhit.tournamentManager = {
         document.querySelector("#submitNumber").style.display = "none";
         document.querySelector("#entrantNameInput").style.display = "block";
         document.querySelector("#submitName").style.display = "block";
+        console.log("Number of entrants submitted: " + num);
     },
     handleNameSubmission: function() {
         const name = document.querySelector("#entrantNameInput").value.trim();
@@ -79,7 +85,7 @@ rhit.tournamentManager = {
         userRef.update({
             entrants: firebase.firestore.FieldValue.arrayUnion(name)
         }).then(() => {
-            console.log("Entrant added successfully.");
+            console.log("Entrant added successfully:", name);
             this.entrants.push(name);
             document.querySelector("#entrantNameInput").value = ""; // Clear the input for the next name
             this.currentEntrantIndex++;
@@ -92,36 +98,39 @@ rhit.tournamentManager = {
         });
     },
     displayBracket: function() {
+        console.log("Displaying the tournament bracket...");
         const bracketContainer = document.getElementById("bracketContainer");
         if (!bracketContainer) {
             console.error("Bracket container not found.");
             return;
         }
-        bracketContainer.innerHTML = "";
+        bracketContainer.innerHTML = ""; // Clear previous content
         const bracket = document.createElement("div");
         bracket.className = "bracket";
         bracket.style.display = "flex";
 
-        let numRounds = Math.ceil(Math.log2(this.entrants.length));
-        let matches = Array.from({ length: numRounds }, () => []);
-
-        for (let i = 0; i < this.entrants.length; i += 2) {
-            matches[0].push([this.entrants[i], this.entrants[i + 1] || "TBD"]);
-        }
-
-        for (let round = 1; round < numRounds; round++) {
-            for (let match = 0; match < Math.pow(2, numRounds-round-1); match++) {
-                matches[round].push(["TBD", "TBD"]);
+        let numRounds = Math.ceil(Math.log2(this.totalEntrants));
+        if (this.matches.length === 0) {
+            this.matches = Array.from({ length: numRounds }, () => []);
+            for (let i = 0; i < this.entrants.length; i += 2) {
+                this.matches[0].push([this.entrants[i], this.entrants[i + 1] || "TBD"]);
             }
         }
 
-        matches.forEach((roundMatches, roundIndex) => {
+        for (let round = 1; round < numRounds; round++) {
+            if (this.matches[round].length === 0) {
+                for (let match = 0; match < Math.pow(2, numRounds-round-1); match++) {
+                    this.matches[round].push(["TBD", "TBD"]);
+                }
+            }
+        }
+
+        this.matches.forEach((roundMatches, roundIndex) => {
             const roundDiv = document.createElement("div");
             roundDiv.className = "round";
             roundMatches.forEach((match, matchIndex) => {
                 const matchDiv = document.createElement("div");
                 matchDiv.className = "match";
-
                 match.forEach((entrant, entrantIndex) => {
                     const entrantButton = document.createElement("button");
                     entrantButton.className = "entrant";
@@ -131,10 +140,10 @@ rhit.tournamentManager = {
                     if (entrant !== "TBD") {
                         entrantButton.onclick = () => {
                             let nextRound = roundIndex + 1;
-                            if (nextRound < matches.length) {
+                            if (nextRound < this.matches.length) {
                                 let nextMatchIndex = Math.floor(matchIndex / 2);
                                 let position = matchIndex % 2 === 0 ? 0 : 1;
-                                matches[nextRound][nextMatchIndex][position] = entrant;
+                                this.matches[nextRound][nextMatchIndex][position] = entrant;
                                 this.displayBracket(); // Redraw bracket with updated state
                             }
                         };
@@ -150,7 +159,9 @@ rhit.tournamentManager = {
     }
 };
 
+/** FirebaseUI Configuration and Initialization **/
 rhit.initializeFirebaseUI = function() {
+    console.log("Initializing FirebaseUI...");
     if (document.getElementById('firebaseui-auth-container')) {
         const ui = new firebaseui.auth.AuthUI(rhit.fbAuthManager.auth);
         ui.start('#firebaseui-auth-container', {
@@ -163,6 +174,7 @@ rhit.initializeFirebaseUI = function() {
             ],
             callbacks: {
                 signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+                    console.log("Sign-in successful, redirecting...");
                     window.location.href = redirectUrl || 'main.html';
                     return false; // Prevents automatic redirect.
                 }
@@ -173,7 +185,7 @@ rhit.initializeFirebaseUI = function() {
 
 // Entry point of the application
 document.addEventListener("DOMContentLoaded", function() {
+    console.log("Document loaded, initializing managers...");
     rhit.fbAuthManager.init();
     rhit.initializeFirebaseUI();
 });
-//

@@ -23,21 +23,30 @@ rhit.fbAuthManager = {
                     lastLogin: firebase.firestore.Timestamp.now()
                 }, { merge: true }).then(() => {
                     console.log("New user document created.");
+                    this.startNewTournament();
                 }).catch((error) => {
                     console.error("Error creating new user document:", error);
                 });
             } else {
                 console.log("Existing Firestore document found for UID:", user.uid);
+                if (doc.data().entrants && doc.data().entrants.length > 0) {
+                    console.log("Existing tournament found, loading...");
+                    rhit.tournamentManager.initWithEntrants(doc.data().entrants);
+                } else {
+                    this.startNewTournament();
+                }
             }
         }).catch((error) => {
             console.error("Error accessing Firestore:", error);
         });
     },
+    startNewTournament: function() {
+        rhit.tournamentManager.init();
+    },
     handleAuthStateChanged: function(user) {
         console.log(user ? "User is signed in." : "No user is signed in.");
         if (user) {
             this.checkOrCreateUser(user);
-            rhit.tournamentManager.init();
         }
     }
 };
@@ -54,6 +63,31 @@ rhit.tournamentManager = {
         document.getElementById('signOutButton').addEventListener('click', this.signOut.bind(this));
         document.querySelector("#submitNumber").addEventListener("click", this.handleNumberSubmission.bind(this));
         document.querySelector("#submitName").addEventListener("click", this.handleNameSubmission.bind(this));
+    },
+    initWithEntrants: function(existingEntrants) {
+        this.entrants = existingEntrants;
+        this.totalEntrants = existingEntrants.length;
+        this.setupExistingTournament();
+    },
+    setupExistingTournament: function() {
+        console.log("Setting up existing tournament with entrants: ", this.entrants);
+        this.createMatchesFromEntrants();
+        this.displayBracket();
+    },
+    createMatchesFromEntrants: function() {
+        let numRounds = Math.ceil(Math.log2(this.totalEntrants));
+        this.matches = Array.from({ length: numRounds }, () => []);
+        for (let i = 0; i < this.entrants.length; i += 2) {
+            this.matches[0].push([this.entrants[i], this.entrants[i + 1] || "TBD"]);
+        }
+
+        for (let round = 1; round < numRounds; round++) {
+            if (this.matches[round].length === 0) {
+                for (let match = 0; match < Math.pow(2, numRounds-round-1); match++) {
+                    this.matches[round].push(["TBD", "TBD"]);
+                }
+            }
+        }
     },
     signOut: function() {
         rhit.fbAuthManager.auth.signOut().then(() => {
@@ -234,4 +268,3 @@ document.addEventListener("DOMContentLoaded", function() {
     rhit.fbAuthManager.init();
     rhit.initializeFirebaseUI();
 });
-//idk

@@ -48,6 +48,7 @@ rhit.tournamentManager = {
     currentEntrantIndex: 0,
     totalEntrants: 0,
     matches: [],
+    winner: null, // To store the overall tournament winner
     init: function() {
         console.log("Initializing Tournament Management...");
         document.getElementById('signOutButton').addEventListener('click', this.signOut.bind(this));
@@ -144,7 +145,15 @@ rhit.tournamentManager = {
                                 let nextMatchIndex = Math.floor(matchIndex / 2);
                                 let position = matchIndex % 2 === 0 ? 0 : 1;
                                 this.matches[nextRound][nextMatchIndex][position] = entrant;
+                                if (nextRound === this.matches.length - 1 && position === 1) { // Check if this is the final round and position is for winner
+                                    this.winner = entrant; // Set the winner
+                                    this.displayWinner(); // Display the winner after the final match
+                                }
                                 this.displayBracket(); // Redraw bracket with updated state
+                            } else if (nextRound === this.matches.length) {
+                                // Final round click handling
+                                this.winner = entrant;
+                                this.displayFinalWinner();
                             }
                         };
                     }
@@ -156,6 +165,42 @@ rhit.tournamentManager = {
 
         bracketContainer.appendChild(bracket);
         bracketContainer.style.display = "block";
+    },
+    displayWinner: function() {
+        console.log("Displaying the tournament winner...");
+        const winnerContainer = document.getElementById("winnerContainer");
+        if (!winnerContainer) {
+            console.error("Winner container not found.");
+            return;
+        }
+        winnerContainer.innerHTML = ""; // Clear previous content
+        const winnerTitle = document.createElement("h2");
+        winnerTitle.textContent = "Tournament Winner";
+        winnerContainer.appendChild(winnerTitle);
+
+        const winnerName = document.createElement("p");
+        winnerName.textContent = this.winner;
+        winnerContainer.appendChild(winnerName);
+    },
+    displayFinalWinner: function() {
+        console.log("Displaying final winner...");
+        let finalWinnerContainer = document.getElementById("finalWinnerContainer");
+        if (!finalWinnerContainer) {
+            finalWinnerContainer = document.createElement("div");
+            finalWinnerContainer.id = "finalWinnerContainer";
+            finalWinnerContainer.style.position = "absolute";
+            finalWinnerContainer.style.top = "50%";
+            finalWinnerContainer.style.left = "50%";
+            finalWinnerContainer.style.transform = "translate(-50%, -50%)";
+            finalWinnerContainer.style.fontSize = "24px";
+            finalWinnerContainer.style.color = "red";
+            document.body.appendChild(finalWinnerContainer);
+        }
+
+        finalWinnerContainer.innerHTML = ""; // Clear previous content before adding new winner
+        const winnerText = document.createElement("h1");
+        winnerText.textContent = "Champion: " + this.winner;
+        finalWinnerContainer.appendChild(winnerText);
     }
 };
 

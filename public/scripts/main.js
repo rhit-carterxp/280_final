@@ -234,3 +234,4 @@ document.addEventListener("DOMContentLoaded", function() {
     rhit.fbAuthManager.init();
     rhit.initializeFirebaseUI();
 });
+//idk

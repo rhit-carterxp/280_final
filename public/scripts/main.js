@@ -57,7 +57,7 @@ rhit.tournamentManager = {
     currentEntrantIndex: 0,
     totalEntrants: 0,
     matches: [],
-    winner: null, // To store the overall tournament winner
+    winner: null,
     init: function() {
         console.log("Initializing Tournament Management...");
         document.getElementById('signOutButton').addEventListener('click', this.signOut.bind(this));
@@ -70,7 +70,7 @@ rhit.tournamentManager = {
         this.setupExistingTournament();
     },
     setupExistingTournament: function() {
-        console.log("Setting up existing tournament with entrants: ", this.entrants);
+        console.log("Setting up existing tournament with entrants:", this.entrants);
         this.createMatchesFromEntrants();
         this.displayBracket();
     },
@@ -80,7 +80,6 @@ rhit.tournamentManager = {
         for (let i = 0; i < this.entrants.length; i += 2) {
             this.matches[0].push([this.entrants[i], this.entrants[i + 1] || "TBD"]);
         }
-
         for (let round = 1; round < numRounds; round++) {
             if (this.matches[round].length === 0) {
                 for (let match = 0; match < Math.pow(2, numRounds-round-1); match++) {

@@ -97,7 +97,7 @@ rhit.tournamentManager = {
     signOut: function() {
         rhit.fbAuthManager.auth.signOut().then(() => {
             console.log('Sign-out successful.');
-            window.location.href = 'index.html';
+            window.location.href = 'https://final-c5553.web.app/';
         }).catch((error) => {
             console.error('Sign-out error:', error);
         });
@@ -286,3 +286,4 @@ document.addEventListener("DOMContentLoaded", function() {
     rhit.tournamentManager.init();
     rhit.initializeFirebaseUI();
 });
+//

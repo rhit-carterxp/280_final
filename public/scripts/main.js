@@ -23,7 +23,7 @@ rhit.fbAuthManager = {
                     lastLogin: firebase.firestore.Timestamp.now()
                 }, { merge: true }).then(() => {
                     console.log("New user document created.");
-                    this.startNewTournament();
+                    rhit.tournamentManager.promptForNewTournament();
                 }).catch((error) => {
                     console.error("Error creating new user document:", error);
                 });
@@ -32,16 +32,13 @@ rhit.fbAuthManager = {
                 if (doc.data().entrants && doc.data().entrants.length > 0) {
                     console.log("Existing tournament found, loading...");
                     rhit.tournamentManager.initWithEntrants(doc.data().entrants);
-                } else {
-                    this.startNewTournament();
+                } else if(window.location.href == "http://localhost:5000/main.html"){
+                    rhit.tournamentManager.promptForNewTournament();
                 }
             }
         }).catch((error) => {
             console.error("Error accessing Firestore:", error);
         });
-    },
-    startNewTournament: function() {
-        rhit.tournamentManager.init();
     },
     handleAuthStateChanged: function(user) {
         console.log(user ? "User is signed in." : "No user is signed in.");
@@ -61,8 +58,16 @@ rhit.tournamentManager = {
     init: function() {
         console.log("Initializing Tournament Management...");
         document.getElementById('signOutButton').addEventListener('click', this.signOut.bind(this));
-        document.querySelector("#submitNumber").addEventListener("click", this.handleNumberSubmission.bind(this));
-        document.querySelector("#submitName").addEventListener("click", this.handleNameSubmission.bind(this));
+        this.addEventListeners();
+    },
+    addEventListeners: function() {
+        document.getElementById("submitNumber").addEventListener('click', this.handleNumberSubmission.bind(this));
+        document.getElementById("submitName").addEventListener('click', this.handleNameSubmission.bind(this));
+    },
+    promptForNewTournament: function() {
+        document.querySelector("#myModal").style.display = "block";
+        document.querySelector("#numberInput").style.display = "block";
+        document.querySelector("#submitNumber").style.display = "block";
     },
     initWithEntrants: function(existingEntrants) {
         this.entrants = existingEntrants;
@@ -265,5 +270,7 @@ rhit.initializeFirebaseUI = function() {
 document.addEventListener("DOMContentLoaded", function() {
     console.log("Document loaded, initializing managers...");
     rhit.fbAuthManager.init();
+    if(window.location.href == "http://localhost:5000/main.html")
+    rhit.tournamentManager.init();
     rhit.initializeFirebaseUI();
 });

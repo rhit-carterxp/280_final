@@ -32,7 +32,7 @@ rhit.fbAuthManager = {
                 if (doc.data().entrants && doc.data().entrants.length > 0) {
                     console.log("Existing tournament found, loading...");
                     rhit.tournamentManager.initWithEntrants(doc.data().entrants);
-                } else if(window.location.href == "http://localhost:5000/main.html"){
+                } else if(window.location.href == "https://final-c5553.web.app//main.html"){
                     rhit.tournamentManager.promptForNewTournament();
                 }
             }
@@ -282,7 +282,7 @@ rhit.initializeFirebaseUI = function() {
 document.addEventListener("DOMContentLoaded", function() {
     console.log("Document loaded, initializing managers...");
     rhit.fbAuthManager.init();
-    if(window.location.href == "http://localhost:5000/main.html")
+    if(window.location.href == "https://final-c5553.web.app//main.html")
     rhit.tournamentManager.init();
     rhit.initializeFirebaseUI();
 });

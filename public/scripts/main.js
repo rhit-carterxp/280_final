@@ -63,6 +63,7 @@ rhit.tournamentManager = {
     addEventListeners: function() {
         document.getElementById("submitNumber").addEventListener('click', this.handleNumberSubmission.bind(this));
         document.getElementById("submitName").addEventListener('click', this.handleNameSubmission.bind(this));
+        document.getElementById("startNewTournament").addEventListener('click', this.startNewTournament.bind(this));
     },
     promptForNewTournament: function() {
         document.querySelector("#myModal").style.display = "block";
@@ -134,6 +135,17 @@ rhit.tournamentManager = {
             }
         }).catch((error) => {
             console.error("Error updating entrants:", error);
+        });
+    },
+    startNewTournament: function() {
+        const userRef = rhit.fbAuthManager.db.collection('users').doc(rhit.fbAuthManager.auth.currentUser.uid);
+        userRef.update({
+            entrants: []  // Clear the entrants array
+        }).then(() => {
+            console.log("Tournament reset, starting new tournament...");
+            window.location.reload();  // Reload the page to reset the application state
+        }).catch((error) => {
+            console.error("Error clearing entrants for new tournament:", error);
         });
     },
     displayBracket: function() {

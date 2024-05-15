@@ -286,3 +286,4 @@ document.addEventListener("DOMContentLoaded", function() {
     rhit.tournamentManager.init();
     rhit.initializeFirebaseUI();
 });
+//

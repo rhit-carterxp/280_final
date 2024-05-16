@@ -1,76 +1,141 @@
-body {
-    background: #DDDDDD;
-    margin: 0; /* Ensures there is no default body margin */
-    padding: 0; /* Ensures there is no default body padding */
-    font-family: Arial, sans-serif; /* Optional: Defines a uniform font */
+/* General Reset */
+body, h1, h2, h3, button, input {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif; /* Consistent font style */
 }
 
+/* Body background to match the light gray seen in the image */
+body {
+    background-color: #cccccc;
+    color: #333;
+    font-family: Arial, sans-serif; /* Ensures a uniform font across browsers */
+}
+
+/* Navbar Styling */
 .navbar {
-    background-color: #800000;
+    background-color: #800000; /* Dark red */
     color: white;
-    height: 50px; /* Example fixed height, adjust as needed */
-    position: fixed; /* Keeps navbar at the top of the viewport */
+    height: 50px;
+    position: fixed;
     top: 0;
     left: 0;
-    right: 0; /* Ensures navbar spans the full width */
-    z-index: 1000; /* Keeps navbar above all other content */
-    padding: 10px 20px; /* Padding for content within navbar */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15); /* Shadow for depth */
+    right: 0;
+    z-index: 1000;
+    padding: 0px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
 }
 
+/* Button styling for consistency */
+button {
+    background-color: #d00; /* Slightly lighter red */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #b00; /* Hover effect for buttons */
+}
+
+/* Padding top for page content to avoid navbar overlap */
 .page-container {
-    padding-top: 75px; /* Adds space equivalent to navbar's height */
-    padding-left: 20px; /* Left padding for content alignment */
-    padding-right: 20px; /* Right padding for content alignment */
+    padding-top: 75px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
-/* Tournament Bracket Specific Styles */
+/* Tournament Bracket Styling */
 .bracket {
     display: flex;
     justify-content: space-evenly;
-    align-items: center; /* Aligns items vertically */
-    gap: 20px; /* Space between rounds */
+    align-items: center;
+    gap: 20px;
     padding: 20px;
-    background: #FFFFFF; /* White background for clarity */
+    background: #cccccc;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    margin: 20px auto; /* Horizontal centering and spacing from top */
-    overflow-x: auto; /* Allows horizontal scrolling if necessary */
+    margin: 20px auto;
+    overflow-x: auto;
 }
 
 .round {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Space between matches in a round */
+    gap: 15px;
     padding: 10px;
-    align-items: center; /* Centers matches within a round */
+    align-items: center;
 }
 
 .match {
     background-color: #f8f8f8;
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid #cccccc; /* Light grey border */
+    border: 1px solid #cccccc;
 }
 
 .entrant {
+    background-color: #800000; /* Dark red */
+    color: #fff;
+    border: 1px solid #900; /* Darker red border */
+    border-radius: 5px;
     padding: 5px;
-    border-bottom: 1px solid #ccc; /* Separator between entrants */
-    text-align: center; /* Centers entrant names */
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .entrant:last-child {
-    border-bottom: none; /* Removes border from last entrant */
+    border-bottom: none;
 }
 
-/* Responsive design adjustments */
+/* Handling Modals for Tournament Settings */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: none;
+}
+
+.close {
+    float: right;
+    font-size: 1.5rem;
+    color: #600;
+}
+
+.close:hover {
+    cursor: pointer;
+    color: #900;
+}
+
+/* Responsive Design Adjustments */
 @media (max-width: 768px) {
     .bracket {
-        flex-direction: column; /* Stacks rounds vertically on small screens */
-        align-items: center; /* Ensures central alignment */
+        flex-direction: column;
     }
-
     .round {
-        align-items: center; /* Centers matches in small screens */
+        align-items: center;
     }
+}
+
+#startNewTournament {
+    color:white; 
+}
+
+#finalWinnerContainer{
+    position: "absolute";
+    top: "50%";
+    left: "50%";
+    transform: "translate(-50%, -50%)";
+    size: 30px;
+    color: "#800000";
 }

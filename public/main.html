@@ -12,8 +12,10 @@
 <body>
     <nav class="navbar navbar-dark fixed-top">
         <a class="navbar-brand" href="#">Tournaments</a>
+            <button id="startNewTournament" class="btn btn-primary">Reset</button>
         <button id="signOutButton" type="button" class="btn text-light">Sign Out</button>
-        <button id="startNewTournament" class="btn btn-primary">Reset</button>
+    
+
     </nav>
 
     <!-- Modal for entering tournament details -->
@@ -30,8 +32,12 @@
            
         </div>
     </div>
+    <br>
+    <br>
+    <br>
 
     <div id="bracketContainer" style="display:none;"></div>
+    <div id="finalWinnerContainer"></div>
 
     <!-- Firebase UI Authentication Container -->
     <!-- Scripts for functionality -->

@@ -132,10 +132,13 @@ button:hover {
 }
 
 #finalWinnerContainer{
-    position: "absolute";
-    top: "50%";
-    left: "50%";
-    transform: "translate(-50%, -50%)";
-    size: 30px;
-    color: "#800000";
+    size: 40px;
+    color: #800000;
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: 100%;
+    display: none;
 }

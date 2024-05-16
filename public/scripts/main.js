@@ -242,16 +242,11 @@ rhit.tournamentManager = {
         if (!finalWinnerContainer) {
             finalWinnerContainer = document.createElement("div");
             finalWinnerContainer.id = "finalWinnerContainer";
-            finalWinnerContainer.style.position = "absolute";
-            finalWinnerContainer.style.top = "50%";
-            finalWinnerContainer.style.left = "50%";
-            finalWinnerContainer.style.transform = "translate(-50%, -50%)";
-            finalWinnerContainer.style.fontSize = "24px";
-            finalWinnerContainer.style.color = "#800000";
             document.body.appendChild(finalWinnerContainer);
         }
 
         finalWinnerContainer.innerHTML = ""; // Clear previous content before adding new winner
+        finalWinnerContainer.style.display = "block";
         const winnerText = document.createElement("h1");
         winnerText.textContent = "Champion: " + this.winner;
         finalWinnerContainer.appendChild(winnerText);

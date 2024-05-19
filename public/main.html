@@ -9,15 +9,17 @@
     <link rel="stylesheet" href="styles/main.css">
     <title>Tournaments</title>
 </head>
-
 <body>
     <nav class="navbar navbar-dark fixed-top">
         <a class="navbar-brand" href="#">Tournaments</a>
+            <button id="startNewTournament" class="btn btn-primary">Reset</button>
         <button id="signOutButton" type="button" class="btn text-light">Sign Out</button>
+    
+
     </nav>
 
     <!-- Modal for entering tournament details -->
-    <div id="myModal" class="modal" style="display: block;">
+    <div id="myModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Setup Tournament</h2>
@@ -27,22 +29,17 @@
             <p>Enter entrant's name:</p>
             <input type="text" id="entrantNameInput" placeholder="Entrant's name" style="display: none;">
             <button id="submitName" class="btn btn-primary" style="display: none;">Submit Name</button>
+           
         </div>
     </div>
-
-    <!-- Container for the tournament bracket -->
-    <!-- <br>
     <br>
     <br>
     <br>
-    <br> -->
-
 
     <div id="bracketContainer" style="display:none;"></div>
+    <div id="finalWinnerContainer"></div>
 
     <!-- Firebase UI Authentication Container -->
-    <!-- <div id="firebaseui-auth-container"></div> -->
-
     <!-- Scripts for functionality -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
